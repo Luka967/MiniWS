@@ -6,8 +6,7 @@
         "WebSocket",
         "RFC-6455",
         "real-time",
-        "browser",
-        ""
+        "browser"
     ],
     "author": {
         "name": "Luka Djokovic",
