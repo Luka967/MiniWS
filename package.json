@@ -1,0 +1,25 @@
+{
+    "name": "miniws",
+    "version": "1.0.1",
+    "description": "A tightly packed WebSocket server+client implementation",
+    "keywords": [
+        "WebSocket",
+        "RFC-6455",
+        "real-time",
+        "browser",
+        ""
+    ],
+    "author": {
+        "name": "Luka Djokovic",
+        "url": "https://github.com/Luka967"
+    },
+    "homepage": "https://github.com/Luka967/MiniWS",
+    "main": "./index.js",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Luka967/MiniWS"
+    },
+    "bugs": {
+        "url": "https://github.com/Luka967/MiniWS/issues"
+    }
+}
