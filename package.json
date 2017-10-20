@@ -6,9 +6,9 @@
         "WebSocket",
         "RFC-6455",
         "real-time",
-        "browser",
-        ""
+        "browser"
     ],
+    "license": "MIT",
     "author": {
         "name": "Luka Djokovic",
         "url": "https://github.com/Luka967"
