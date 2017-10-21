@@ -2,3 +2,4 @@
 [ ] Add support for permessage-deflate
 [ ] Support custom extensions
 [ ] Support both HTTPS listeners and connection agents
+[ ] Fragment large messages
