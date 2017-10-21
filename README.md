@@ -1,3 +1,6 @@
+
+![npm package](https://nodei.co/npm/miniws.png?downloads=true&downloadRank=true&stars=true)
+
 # MiniWS Documentation
 
 ## Incompatibilies
