@@ -7,6 +7,7 @@
 - Minimum node.js version is v6.4.0 - it uses classes and rest parameters.
 - `Socket.onmessage` has either a `Buffer` and a `String` as the message.
 - It's built only for the RFC6455 protocol specification.
+- Only one event handler is allowed.
 
 ```js
 const MiniWS = require("miniws");
@@ -165,7 +166,7 @@ connection.on("error", function(err) {
 });
 ```
 
-Emitted either when the upgrade gets rejected or an unavoidable protocol error gets caught. If no event handler is set the error gets thrown and will not be caught internally.
+Emitted either when the client-side upgrade gets rejected or an unavoidable protocol error gets caught. If no event handler is set the error gets thrown and will not be caught internally.
 
 ### Event `close`
 
