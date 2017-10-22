@@ -1,16 +1,21 @@
 
 ![npm package](https://nodei.co/npm/miniws.png?downloads=true&downloadRank=true&stars=true)
 
-# MiniWS Documentation
+## Notes
 
-## Incompatibilies
-
-- No integrated support TLS/SSL for both client sockets and server.
 - No permessage-deflate.
+- No integrated support TLS/SSL for both client sockets and server.
 - Minimum node.js version is v6.4.0 - it uses classes and rest parameters.
 - `Socket.onmessage` has either a `Buffer` and a `String` as the message.
 - It's built only for the RFC6455 protocol specification.
-- Only one event handler is allowed.
+- Only one event handler per event is allowed.
+- Events can be set by calling `on` or `once` or by setting `onX` (ex. `onmessage = handler`).
+- The `Server` class doesn't track connections, so:
+    - Broadcasting isn't supported.
+    - Closing the HTTP server doesn't close active connections.
+- Closing a socket will not automatically trigger the `close` event. It will wait for the other peer's response (close opcode message or explicit FIN) and then emit it.
+
+# MiniWS Documentation
 
 ```js
 const MiniWS = require("miniws");
@@ -60,13 +65,13 @@ const myServer = new MiniWS.Server({
     - `options.port` (`Number?`) The bind port for the HTTP server. Defaults to `80`.
     - `options.backlog` (`Number?`) The maximum count of pending connections. Defaults to `511`.
     - `options.httpServer` (`http.Server` or `https.Server`) The object to use as the HTTP server. If unspecified an internal default `http.Server` is used.
-    - `options.verifyConnection` (`Function?` returning `Boolean`) If specified, it's synchronously called after checking the headers of the incoming request. If it returns `false`, the response is a 400 Bad Request, thereby saving a little in bandwidth.
+    - `options.verifyConnection` (`Function?` returning `Boolean`) If specified, it's synchronously called after checking the headers of the incoming request. If it returns `false`, the server responds with 403 Forbidden, thereby saving a little in bandwidth.
         - `remoteAddress` (`String`) Remote address of the incoming connection.
         - `origin` (`String`) The origin given in the headers, if any.
         - `extensions` (`ExtensionObject`) The extensions given.
         - `subprotocols` (`String[]`) An array consisting of requested subprotocols.
         - `request` (`http.IncomingMessage`) The request itself.
-    - `options.getSubProtocol` (`Function?` returning `String`) If specifed, it's called after `options.verifyConnection` in case a subprotocol was requested. Note that it has the same arguments as `options.verifyConnection` albeit in a different order.
+    - `options.getSubProtocol` (`Function?` returning `String`) If specifed, it's called after `options.verifyConnection` in case a subprotocol was requested. Note that it has the same arguments as `options.verifyConnection` albeit in a different order. The return value will be set as the subprotocol for the response.
 - `callback` (`Function?`) Optional. Internally calls `.start(callback)` immediately after finishing construction.
 
 #### The extensions object
@@ -232,6 +237,37 @@ connection.on("pong", function(message) {
 - `message` (`Buffer`) The message sent with `.ping`, echoed. If none, it is a zero-length `Buffer`.
 
 Emitted when a FIN-ended pong message is received.
+
+### `.remoteAddress`
+
+Available in both types of connections.
+
+```js
+sqlHandle.log("connection", newConnection.remoteAddress, Date.now());
+```
+
+- Returns `String`
+
+Returns the IP address of the remote peer.
+
+### `.state`
+
+Available in both types of connections.
+
+```js
+if (connection.state === MiniWS.Socket.CLOSED)
+    throw new Error("Why are you closed??????");
+```
+
+- Returns `Number` Possible values are `0` for `CLOSED`, `1` for `CONNECTING` and `2` for `OPEN`.
+
+Indicates the state of the connection.
+
+If the state is `CLOSED`, write operations (`.ping`, `.send`, `.abort`) are going to throw upon calling.
+
+If the state is `CONNECTING`, `.abort` can be called once. See [`MiniWS.createClient`](#miniwscreateclient) for more details.
+
+If the state is `OPEN`, `.ping` and `.send` can be called until `.close` gets called or the remote peer ends the connection. `.abort` will throw.
 
 ### `.ping`
 
